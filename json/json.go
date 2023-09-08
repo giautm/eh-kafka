@@ -26,13 +26,7 @@ func (Encoder) Decode(rawData []byte) (eh.Event, context.Context, error) {
 	if err := json.Unmarshal(rawData, &e); err != nil {
 		return nil, nil, errors.Wrap(err, string(rawData)+" could not unmarshal event")
 	}
-
-	// Use "Local" location
-	zone, err := time.LoadLocation("Local")
-	if err != nil {
-		return nil, nil, errors.Wrap(err, string(rawData)+" could not load location")
-	}
-	e.Timestamp = e.Timestamp.In(zone)
+	e.Timestamp = e.Timestamp.In(time.Local)
 
 	// Create an event of the correct type.
 	if data, err := eh.CreateEventData(e.EventType); err == nil {
